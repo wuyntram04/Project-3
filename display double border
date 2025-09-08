@@ -1,0 +1,40 @@
+#include <iostream>
+#include <string>
+
+void printDoubleBorder(int width, int height, const std::string& content) {
+    // Top border
+    std::cout << "\xC9"; // Top-left corner (double line)
+    for (int i = 0; i < width - 2; ++i) {
+        std::cout << "\xCD"; // Horizontal double line
+    }
+    std::cout << "\xBB" << std::endl; // Top-right corner (double line)
+
+    // Middle rows with content
+    for (int i = 0; i < height - 2; ++i) {
+        std::cout << "\xBA"; // Vertical double line
+        if (i == (height - 2) / 2) { // Place content in the middle
+            int padding_left = (width - 2 - content.length()) / 2;
+            int padding_right = (width - 2 - content.length()) - padding_left;
+            for (int j = 0; j < padding_left; ++j) std::cout << " ";
+            std::cout << content;
+            for (int j = 0; j < padding_right; ++j) std::cout << " ";
+        } else {
+            for (int j = 0; j < width - 2; ++j) {
+                std::cout << " "; // Empty space
+            }
+        }
+        std::cout << "\xBA" << std::endl; // Vertical double line
+    }
+
+    // Bottom border
+    std::cout << "\xC8"; // Bottom-left corner (double line)
+    for (int i = 0; i < width - 2; ++i) {
+        std::cout << "\xCD"; // Horizontal double line
+    }
+    std::cout << "\xBC" << std::endl; // Bottom-right corner (double line)
+}
+
+int main() {
+    printDoubleBorder(40, 10, "Hello, Double Border!");
+    return 0;
+}
