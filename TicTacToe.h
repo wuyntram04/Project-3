@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include<iostream>
 #include"input.h"
 #include <chrono>
@@ -106,6 +106,8 @@ public:
             }
             else 
             {
+                int middleRow = row / 2;
+                int middleCol = row / 2;
                 cout << "\n\tDumb AI moves...";
 
                 bool placed = false;
@@ -115,8 +117,22 @@ public:
                     {
                         if (isEmpty(i,j)) 
                         {
-                            board[i][j] = computer;
-                            placed = true;
+                            if (isEmpty(middleRow, middleCol))
+                            {
+                                board[middleRow][middleCol] = computer;
+                                placed = true;
+
+                            }
+                            else if (blockImmediateWin())
+                            {
+                                placed = true;
+                            }
+                            else
+                            {
+                                board[i][j] = computer;
+                                placed = true;
+                            }
+
                         }
                     }
                         
@@ -140,7 +156,8 @@ public:
         auto end = steady_clock::now();     // record game end time
         auto duration = duration_cast<seconds>(end - start).count();
 
-       
+        
+        cout << "\n\t" << duration;
         
     }
 
@@ -220,5 +237,65 @@ public:
         return false; // keep playing
     }
 
+    bool blockImmediateWin() {
+        // 1) Check rows
+        for (int i = 0; i < 3; ++i) {
+            int humanCount = 0, compCount = 0, er = -1, ec = -1;
+            for (int j = 0; j < 3; ++j) {
+                if (board[i][j] == human) humanCount++;
+                else if (board[i][j] == computer) compCount++;
+                else { er = i; ec = j; } // remember empty cell
+            }
+            if (humanCount == 2 && compCount == 0 && er != -1) {
+                board[er][ec] = computer;
+                return true;
+            }
+        }
+
+        // 2) Check columns
+        for (int j = 0; j < 3; ++j) {
+            int humanCount = 0, compCount = 0, er = -1, ec = -1;
+            for (int i = 0; i < 3; ++i) {
+                if (board[i][j] == human) humanCount++;
+                else if (board[i][j] == computer) compCount++;
+                else { er = i; ec = j; }
+            }
+            if (humanCount == 2 && compCount == 0 && er != -1) {
+                board[er][ec] = computer;
+                return true;
+            }
+        }
+
+        // 3) Main diagonal (0,0)-(1,1)-(2,2)
+        {
+            int humanCount = 0, compCount = 0, er = -1, ec = -1;
+            for (int k = 0; k < 3; ++k) {
+                if (board[k][k] == human) humanCount++;
+                else if (board[k][k] == computer) compCount++;
+                else { er = k; ec = k; }
+            }
+            if (humanCount == 2 && compCount == 0 && er != -1) {
+                board[er][ec] = computer;
+                return true;
+            }
+        }
+
+        // 4) Anti-diagonal (0,2)-(1,1)-(2,0)
+        {
+            int humanCount = 0, compCount = 0, er = -1, ec = -1;
+            for (int k = 0; k < 3; ++k) {
+                int r = k, c = 2 - k;
+                if (board[r][c] == human) humanCount++;
+                else if (board[r][c] == computer) compCount++;
+                else { er = r; ec = c; }
+            }
+            if (humanCount == 2 && compCount == 0 && er != -1) {
+                board[er][ec] = computer;
+                return true;
+            }
+        }
+
+        return false; // no block needed/possible
+    }
 };
 
