@@ -154,7 +154,7 @@ public:
     time_t end = time(nullptr);                    
     double duration = difftime(end, start);        
 
-    cout << duration << " seconds.\n";
+    cout << "\n\t" << duration << " seconds.\n";
 }
 
     bool checkWin(char p) 
@@ -294,5 +294,6 @@ public:
         return false; // no block needed/possible
     }
 };
+
 
 
