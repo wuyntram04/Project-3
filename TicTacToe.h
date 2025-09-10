@@ -66,100 +66,96 @@ public:
     
     }
 
-    void playGame() {
-        auto start = steady_clock::now();
-        int moves = 0;
+    void playGame()
+{
+    time_t start = time(nullptr);   
+    int moves = 0;
+    displayBoard();
+    while (true) {
         displayBoard();
-        while (true) {
-            displayBoard();
 
-            if (currentPlayer == human)
+        if (currentPlayer == human)
+        {
+            cout << "\n\tHUMAN moves...";
+            int r = inputInteger("\n\n\t\tEnter the board's row # (1..3) or 0 to forfeit:", 0, 3);
+            if (r == 0)
             {
-                cout << "\n\tHUMAN moves...";
-                int r = inputInteger("\n\n\t\tEnter the board's row # (1..3) or 0 to forfeit:", 0, 3);
-                if (r == 0)
-                {
-                    cout << "\n\tYou forfeited the game. Therefore, Dumb AI has won.";
-                    break;
-                }
-
-                int c = inputInteger("\n\t\tEnter the board's column # (1..3) or 0 to forfeit:", 0, 3);
-                if (c == 0 )
-                {
-                    cout << "\n\tYou forfeited the game. Therefore, Dumb AI has won.";
-                    break;
-                }
-
-                r--;
-                c--;
-
-                if (!isEmpty(r,c)) {
-                    cout << "\n\tERROR: Illegal move. The square has already owned. Please re-specify.\n";
-                    continue; // same player retries
-                }
-
-                board[r][c] = human;
-                moves++;
-                if(endOfTurn(human, moves)) break;
-                currentPlayer = computer;
-
+                cout << "\n\tYou forfeited the game. Therefore, Dumb AI has won.";
+                break;
             }
-            else 
+
+            int c = inputInteger("\n\t\tEnter the board's column # (1..3) or 0 to forfeit:", 0, 3);
+            if (c == 0)
             {
-                int middleRow = row / 2;
-                int middleCol = row / 2;
-                cout << "\n\tDumb AI moves...";
+                cout << "\n\tYou forfeited the game. Therefore, Dumb AI has won.";
+                break;
+            }
 
-                bool placed = false;
-                for (int i = 0; i < row && !placed; ++i)
+            r--;
+            c--;
+
+            if (!isEmpty(r, c)) {
+                cout << "\n\tERROR: Illegal move. The square has already owned. Please re-specify.\n";
+                continue; // same player retries
+            }
+
+            board[r][c] = human;
+            moves++;
+            if (endOfTurn(human, moves)) break;
+            currentPlayer = computer;
+
+        }
+        else
+        {
+            int middleRow = row / 2;
+            int middleCol = row / 2;
+            cout << "\n\tDumb AI moves...";
+
+            bool placed = false;
+            for (int i = 0; i < row && !placed; ++i)
+            {
+                for (int j = 0; j < column && !placed; ++j)
                 {
-                    for (int j = 0; j < column && !placed; ++j)
+                    if (isEmpty(i, j))
                     {
-                        if (isEmpty(i,j)) 
+                        if (isEmpty(middleRow, middleCol))
                         {
-                            if (isEmpty(middleRow, middleCol))
-                            {
-                                board[middleRow][middleCol] = computer;
-                                placed = true;
-
-                            }
-                            else if (blockImmediateWin())
-                            {
-                                placed = true;
-                            }
-                            else
-                            {
-                                board[i][j] = computer;
-                                placed = true;
-                            }
-
+                            board[middleRow][middleCol] = computer;
+                            placed = true;
+                        }
+                        else if (blockImmediateWin())
+                        {
+                            placed = true;
+                        }
+                        else
+                        {
+                            board[i][j] = computer;
+                            placed = true;
                         }
                     }
-                        
                 }
+            }
 
-                if (!placed) 
-                { 
-                    displayBoard(); 
-                    cout << "\n\tIt's a draw.\n"; 
-                    break; 
-                }
+            if (!placed)
+            {
+                displayBoard();
+                cout << "\n\tIt's a draw.\n";
+                break;
+            }
 
-                moves++;
+            moves++;
 
-                if (endOfTurn(computer, moves)) break;
+            if (endOfTurn(computer, moves)) break;
 
-                currentPlayer = human;
-            }         
+            currentPlayer = human;
         }
-
-        auto end = steady_clock::now();     // record game end time
-        auto duration = duration_cast<seconds>(end - start).count();
-
-        
-        cout << "\n\t" << duration;
-        
     }
+
+    time_t end = time(nullptr);                    
+    double duration = difftime(end, start);        
+
+    cout << duration << " seconds.\n";
+}
 
     bool checkWin(char p) 
     {
@@ -298,4 +294,5 @@ public:
         return false; // no block needed/possible
     }
 };
+
 
