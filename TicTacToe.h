@@ -1,9 +1,7 @@
-#pragma once
+﻿#pragma once
 #include<iostream>
 #include"input.h"
-#include <chrono>
 using namespace std;
-using namespace std::chrono;
 class TicTacToe
 {
 private:
@@ -16,6 +14,13 @@ private:
     bool isEmpty(int r, int c) const {
         return board[r][c] != 'X' && board[r][c] != 'O';
     }
+    double totalGames = 0.0;     
+    double totalTime = 0.0;
+    double fastest = 0.0;        
+    double fastestMoves = 0.0;
+    double slowest = 0.0;        
+    double slowestMoves = 0.0;
+
 public: 
     TicTacToe() {
         // initialize 
@@ -66,113 +71,104 @@ public:
     
     }
 
-    void playGame()
- {
-     time_t start = time(nullptr);   
-     int moves = 0;
-     cout << "\n\n\tGame begins...";
-     displayBoard();
-     while (true)
-     {
-         displayBoard();
+    bool isDraw = false;
+    void playGame() {
+        time_t start = time(nullptr);   
+        int moves = 0;
+        int humanMoves = 0;
+        isDraw = false;
 
-         if (currentPlayer == human)
-         {
-             cout << "\n\tHUMAN moves...";
-             int r = inputInteger("\n\n\t\tEnter the board's row # (1..3) or 0 to forfeit:", 0, 3);
-             if (r == 0)
-             {
-                 cout << "\n\tYou forfeited the game. Therefore, Dumb AI has won.";
-                 break;
-             }
+        while (true) {
+            displayBoard();
 
-             int c = inputInteger("\n\t\tEnter the board's column # (1..3) or 0 to forfeit:", 0, 3);
-             if (c == 0)
-             {
-                 cout << "\n\tYou forfeited the game. Therefore, Dumb AI has won.";
-                 break;
-             }
+            if (currentPlayer == human)
+            {
+                cout << "\n\tHUMAN moves...";
+                int r = inputInteger("\n\n\t\tEnter the board's row # (1..3) or 0 to forfeit:", 0, 3);
+                if (r == 0)
+                {
+                    cout << "\n\tYou forfeited the game. Therefore, Dumb AI has won.";
+                    break;
+                }
 
-             r--;
-             c--;
+                int c = inputInteger("\n\t\tEnter the board's column # (1..3) or 0 to forfeit:", 0, 3);
+                if (c == 0 )
+                {
+                    cout << "\n\tYou forfeited the game. Therefore, Dumb AI has won.";
+                    break;
+                }
 
-             if (!isEmpty(r, c)) {
-                 cout << "\n\tERROR: Illegal move. The square has already owned. Please re-specify.\n";
-                 continue; // same player retries
-             }
+                r--;
+                c--;
 
-             board[r][c] = human;
-             moves++;
-             if (endOfTurn(human, moves)) break;
-             currentPlayer = computer;
+                if (!isEmpty(r,c)) {
+                    cout << "\n\tERROR: Illegal move. The square has already owned. Please re-specify.\n";
+                    continue; // same player retries
+                }
 
-         }
-         else
-         {
-             int middleRow = row / 2;
-             int middleCol = row / 2;
-             cout << "\n\tDumb AI moves...";
+                board[r][c] = human;
+                moves++;
+                humanMoves++;
+                if(endOfTurn(human)) break;
+                currentPlayer = computer;
 
-             bool placed = false;
-             for (int i = 0; i < row && !placed; ++i)
-             {
-                 for (int j = 0; j < column && !placed; ++j)
-                 {
-                     if (isEmpty(i, j))
-                     {
-                         if (isEmpty(middleRow, middleCol))
-                         {
-                             board[middleRow][middleCol] = computer;
-                             placed = true;
-                         }
-                         else if (blockImmediateWin())
-                         {
-                             placed = true;
-                         }
-                         else
-                         {
-                             board[i][j] = computer;
-                             placed = true;
-                         }
-                     }
-                 }
-             }
+            }
+            else 
+            {
+                int middleRow = row / 2;
+                int middleCol = column / 2;
+                cout << "\n\tDumb AI moves...";
 
-             if (!placed)
-             {
-                 displayBoard();
-                 cout << "\n\tIt's a draw.\n";
-                 break;
-             }
+                bool placed = false;
 
-             moves++;
+                if(blockImmediateWin())
+                {
+                    placed = true;
+                }
+                else if (isEmpty(middleRow, middleCol)) {
+                    board[middleRow][middleCol] = computer;
+                    placed = true;
+                }
+                else
+                {
+                    for (int i = 0; i < row && !placed; ++i)
+                    {
+                        for (int j = 0; j < column && !placed; ++j)
+                        {
+                            if (isEmpty(i, j))
+                            {
+                                board[i][j] = computer;
+                                placed = true;
+                            }
+                        }
+                    }
+                }
 
-             if (endOfTurn(computer, moves)) break;
+                if (!placed) 
+                { 
+                    displayBoard(); 
+                    cout << "\n\tIt's a draw.\n"; 
+                    isDraw = true;
+                    break; 
+                }
 
-             currentPlayer = human;
-         }
-     }
+                moves++;
 
-     time_t end = time(nullptr);                    
-     double duration = difftime(end, start);  
+                if (endOfTurn(computer)) break;
 
-
-     cout << "\n\t" << duration << " seconds.\n";
-
- }
-
-void resetBoard()
-{
-    for (int i = 0; i < column; i++)
-    {
-        for (int j = 0; j < row; j++)
-        {
-            board[i][j] = ' ';
+                currentPlayer = human;
+            }         
         }
-    }
 
-    currentPlayer = human;
-}
+
+        time_t end = time(nullptr);
+        int duration = static_cast<int>(end - start);
+
+        if(!isDraw) 
+        {
+            updateStats(duration, humanMoves);
+        }       
+    }
 
     bool checkWin(char p) 
     {
@@ -228,8 +224,8 @@ void resetBoard()
 
         
     }
-
-    bool endOfTurn(char played, int moves) {
+    
+    bool endOfTurn(char played) {
         if (checkWin(played)) {
             displayBoard();
             if (played == human)
@@ -240,21 +236,20 @@ void resetBoard()
             {
                 cout << "\n\tDUMB AI wins.\n";
             }
+            isDraw = false;
             return true; // game over
         }
-        if (moves == row * column) {
-            displayBoard();
-            cout << "\n\tIt's a draw.\n";
-            return true; // game over
-        }
-        return false; // keep playing
+        return false;
     }
 
     bool blockImmediateWin() {
         // 1) Check rows
-        for (int i = 0; i < 3; ++i) {
-            int humanCount = 0, compCount = 0, er = -1, ec = -1;
-            for (int j = 0; j < 3; ++j) {
+        for (int i = 0; i < row; ++i) {
+            int humanCount = 0;
+            int compCount = 0;
+            int er = -1;
+            int ec = -1;
+            for (int j = 0; j < row; ++j) {
                 if (board[i][j] == human) humanCount++;
                 else if (board[i][j] == computer) compCount++;
                 else { er = i; ec = j; } // remember empty cell
@@ -266,8 +261,11 @@ void resetBoard()
         }
 
         // 2) Check columns
-        for (int j = 0; j < 3; ++j) {
-            int humanCount = 0, compCount = 0, er = -1, ec = -1;
+        for (int j = 0; j < column; ++j) {
+            int humanCount = 0;
+            int compCount = 0;
+            int er = -1;
+            int ec = -1;
             for (int i = 0; i < 3; ++i) {
                 if (board[i][j] == human) humanCount++;
                 else if (board[i][j] == computer) compCount++;
@@ -281,7 +279,10 @@ void resetBoard()
 
         // 3) Main diagonal (0,0)-(1,1)-(2,2)
         {
-            int humanCount = 0, compCount = 0, er = -1, ec = -1;
+            int humanCount = 0;
+            int compCount = 0;
+            int er = -1;
+            int ec = -1;
             for (int k = 0; k < 3; ++k) {
                 if (board[k][k] == human) humanCount++;
                 else if (board[k][k] == computer) compCount++;
@@ -295,7 +296,10 @@ void resetBoard()
 
         // 4) Anti-diagonal (0,2)-(1,1)-(2,0)
         {
-            int humanCount = 0, compCount = 0, er = -1, ec = -1;
+            int humanCount = 0;
+            int compCount = 0;
+            int er = -1;
+            int ec = -1;
             for (int k = 0; k < 3; ++k) {
                 int r = k, c = 2 - k;
                 if (board[r][c] == human) humanCount++;
@@ -307,12 +311,48 @@ void resetBoard()
                 return true;
             }
         }
-
         return false; // no block needed/possible
     }
+
+    void resetBoard()
+    {
+        for (int i = 0; i < column; i++)
+        {
+            for (int j = 0; j < row; j++)
+            {
+                board[i][j] = ' ';
+            }
+        }
+        currentPlayer = human;
+    }
+
+    void updateStats(int secs, int moves) {
+        totalGames++;
+        totalTime += secs;
+
+        if (fastest == 0.0 || secs < fastest)
+        {
+            fastest = secs;
+            fastestMoves = moves;
+
+        }
+        if (secs > slowest)
+        {
+            slowest = secs;
+            slowestMoves = moves;
+        }
+    }
+
+    void printStats() {
+        if (totalGames == 0) {
+            cout << "\n\tNo game statistic collected.";
+            return;
+        }
+        double avg = (fastest + slowest) / 2.0 ; 
+        cout << "\n\t" << totalGames << (totalGames == 1 ? " game" : " games") << " using Tic-Tac-Toe were played.";
+        cout << "\n\t\tThe fastest time was " << fastest << " second(s) in " << fastestMoves << " moves.";
+        cout << "\n\t\tThe slowest time was " << slowest << " second(s) in " << slowestMoves << " moves.";
+        cout << "\n\t\tThe average time was " << avg << " second(s).";
+    }
 };
-
-
-
-
 
