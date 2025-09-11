@@ -63,4 +63,21 @@ void TicTacToeMenu() {
 	TicTacToe t;
 
 	t.playGame();
+
+	do
+{
+	switch (toupper(inputChar("\n\tPlay again? (Y-yes or N-no): ", 'YN')))
+    {
+    case 'Y':
+    {
+	  t.resetBoard();
+	  t.playGame();
+
+    }
+    break;
+	case 'N': return;
+	default: cout << "\n\tInvalid Option.";
+	}
+} while (true);
 }
+
