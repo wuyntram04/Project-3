@@ -161,6 +161,19 @@ public:
 
  }
 
+void resetBoard()
+{
+    for (int i = 0; i < column; i++)
+    {
+        for (int j = 0; j < row; j++)
+        {
+            board[i][j] = ' ';
+        }
+    }
+
+    currentPlayer = human;
+}
+
     bool checkWin(char p) 
     {
         // check row
@@ -298,6 +311,7 @@ public:
         return false; // no block needed/possible
     }
 };
+
 
 
 
