@@ -60,24 +60,19 @@ void TicTacToeMenu() {
 	cout << "\n\tthen be calculated and displayed.";
 	cout << "\n\n\tGame begins...";
 
+	
+
 	TicTacToe t;
+	char again;
 
-	t.playGame();
+	do {
+		t.resetBoard();     
+		cout << "\n\n\tGame begins...";
+		t.playGame();           
+		again = toupper(inputChar("\n\n\tPlay again? (Y-yes or N-no): ", "YN"));
+	} while (again == 'Y');
 
-	do
-{
-	switch (toupper(inputChar("\n\tPlay again? (Y-yes or N-no): ", 'YN')))
-    {
-    case 'Y':
-    {
-	  t.resetBoard();
-	  t.playGame();
-
-    }
-    break;
-	case 'N': return;
-	default: cout << "\n\tInvalid Option.";
-	}
-} while (true);
+	t.printStats();  
 }
+
 
