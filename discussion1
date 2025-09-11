@@ -1,0 +1,5 @@
+Container classes are classes that are used to store and manage collections of data. 
+They can hold multiple values and make it easier to organize and work with them.
+A key feature of a good container class is abstraction, which means the user can use the container without needing to know how it works internally. 
+This makes the class easier to reuse and understand. For example, in C++, 
+the vector class is a container that can hold a list of elements and automatically handles resizing when you add or remove items. 
