@@ -49,37 +49,6 @@ public:
 				cout << "\n\t" << setw(rings + 1) << "\xBA" << "\n"; // ■ 
 			}
 
-			cout << left << setw(10);
-
-			if (i <= towerB.size())
-			{
-				int space = 0;
-
-				while (space < (rings - i))
-				{
-					cout << " ";
-					space++;
-				}
-
-				for (int j = towerB.top(); j <= i; j++)
-				{
-					cout << "\xFE";
-				}
-
-				cout << i;
-
-				for (int j = towerB.top(); j <= i; j++)
-				{
-					cout << "\xFE";
-				}
-
-
-			}
-			else
-			{
-				cout << "\n\t" << setw(rings + 1) << "\xBA" << "\n"; // ■ 
-			}
-
 			cout << "\n";
 
 		}
