@@ -1,4 +1,4 @@
-﻿#include <stack>
+#include <stack>
 #pragma once
 using namespace std;
 
@@ -15,7 +15,7 @@ public:
 
 	void displayTower()
 	{
-		cout << "\n\t" << setw(rings + 1) << "\xBA" << "\n"; // ■ 
+		cout << "\n\t" << string(rings, char(' ')) << "\xBA" << string(rings * 2 + 5, char(' ')) << "\xBA" << string(rings * 2 + 5, char(' ')) << "\xBA" << string(5, char(' ')) << "\n"; // ■ 
 
 		for (int i = 1; i <= rings; i++)
 		{
@@ -35,22 +35,27 @@ public:
 					cout << "\xFE";
 				}
 
-				cout << i; 
+				cout << i;
 
 				for (int j = towerA.top(); j <= i; j++)
 				{
 					cout << "\xFE";
 				}
 
+				space = 0;
+
 				while (space < (rings - i))
 				{
 					cout << " ";
 					space++;
 				}
+
+				cout << string(5, char(' '));
 			}
 			else
 			{
-			//	cout << "\n\t" << setw(rings + 1) << "\xBA" << "\n"; // ■ 
+				cout << setw(rings + 1) << "\xBA";
+				cout << string(5, char(' '));
 			}
 
 
@@ -76,10 +81,60 @@ public:
 					cout << "\xFE";
 				}
 
+				space = 0;
+
+				while (space < (rings - i))
+				{
+					cout << " ";
+					space++;
+				}
+
+				cout << string(5, char(' '));
+
 			}
 			else
 			{
 				cout << setw(rings + 1) << "\xBA"; // ■ 
+				cout << string(rings + 5, char(' '));
+			}
+
+			if (i <= towerC.size())
+			{
+				int space = 0;
+
+				while (space < (rings - i))
+				{
+					cout << " ";
+					space++;
+				}
+
+				for (int j = towerC.top(); j <= i; j++)
+				{
+					cout << "\xFE";
+				}
+
+				cout << i;
+
+				for (int j = towerC.top(); j <= i; j++)
+				{
+					cout << "\xFE";
+				}
+
+				space = 0;
+
+				while (space < (rings - i))
+				{
+					cout << " ";
+					space++;
+				}
+
+				cout << string(5, char(' '));
+
+			}
+			else
+			{
+				cout << setw(rings + 1) << "\xBA"; // ■ 
+				cout << string(rings  + 5, char(' '));
 			}
 
 			cout << "\n";
@@ -87,17 +142,24 @@ public:
 		}
 
 		cout << "\t";
-		for (int i = 0; i < rings; i++)
-		{
-			cout << "\xCD";
-		}
 
-		cout << "\xCA";
-
-		for (int i = 0; i < rings; i++)
+		for (int i = 0; i < 3; i++)
 		{
-			cout << "\xCD";
+			for (int i = 0; i < rings; i++)
+			{
+				cout << "\xCD";
+			}
+
+			cout << "\xCA";
+
+			for (int i = 0; i < rings; i++)
+			{
+				cout << "\xCD";
+			}
+
+			cout << string(5, char(' '));
 		}
+		
 	}
 			
 	void setRings(int r)
