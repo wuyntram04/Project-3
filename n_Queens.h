@@ -1,7 +1,22 @@
 #pragma once
 #include<iostream>
 #include"input.h"
+#include<iomanip>
+#include <map>
+
 using namespace std;
+
+struct Stats
+{
+    int totalGames = 0;
+    double totalTime = 0.0;
+    double fastest = 0.0;
+    int fastestMoves = 0;
+    double slowest = 0.0;
+    int slowestMoves = 0;
+};
+
+map<int, Stats> statsBySize;
 
 class n_Queens
 {
@@ -10,27 +25,31 @@ private:
     char** board = nullptr;
 
     int moves = 0;
+    int roundMoves = 0;
     char empty = '_';
     char queen = 'Q';
     int countQueen = 0;
-    double totalGames = 0.0;
+   /* double totalGames = 0.0;
     double totalTime = 0.0;
     double fastest = 0.0;
     double fastestMoves = 0.0;
     double slowest = 0.0;
-    double slowestMoves = 0.0;
+    double slowestMoves = 0.0;*/
     bool win = false;
-    
-    void allocBoard(int size) {
+
+    void allocBoard(int size)
+    {
         num = size;
         board = new char* [num];
-        for (int r = 0; r < num; ++r) {
+        for (int r = 0; r < num; ++r) 
+        {
             board[r] = new char[num];
         }
         clearBoard();
     }
 
-    void freeBoard() {
+    void freeBoard()
+    {
         if (!board) return;
         for (int r = 0; r < num; ++r) delete[] board[r];
         delete[] board;
@@ -95,49 +114,46 @@ private:
 
 public:
 
-    void reset(int size) {
+    void reset(int size) 
+    {
         freeBoard();
         allocBoard(size);
         moves = 0;
+        roundMoves = 0;
         countQueen = 0;
         win = false;
     }
 
     void placeQueen()
     {
-        time_t start = time(nullptr);
         int row = inputInteger("\n\tPosition a queen in the row (1.." + to_string(num) + "): ", 1, num) - 1;
         int col = inputInteger("\n\tPosition a queen in the column (1.." + to_string(num) + "): ", 1, num) - 1;
-        
 
         if (board[row][col] == queen)
         {
-            cout << "\n\tERROR: a queen has already placed in the position (row and colume). Try again.\n";
+            cout << "\n\tERROR: a queen has already placed here.\n";
         }
-        else if (!canPlace( row, col)) { }
+        else if (!canPlace(row, col))
+        {
+            cout << "\n\tERROR: conflict with existing queen.\n";
+        }
         else
         {
             board[row][col] = queen;
-            cout << "\n\tPlaced a queen at (" << row + 1 << ", " << col + 1 << ")\n";
+            cout << "\n\tPlaced a queen at (" << row + 1 << ", " << col + 1 << ")";
             moves++;
+            roundMoves++;   // count this round’s step
             countQueen++;
         }
 
         if (countQueen == num)
         {
-            cout << "\n\tCongratulation!You have solved " << countQueen << "-Queens in " << moves << " moves.";
+            cout << "\n\tCongratulations! You solved " << num
+                << "-Queens in " << roundMoves << " moves.";
             win = true;
         }
-       
-        cout << "\n";
+
         displayBoard();
-
-        time_t end = time(nullptr);
-        int duration = static_cast<int>(end - start);
-
-       
-         updateStats(duration, moves);
-        
     }
 
     void removeQueen()
@@ -146,14 +162,13 @@ public:
         int col = inputInteger("\n\tRemove queen from column (1.." + to_string(num) + "): ", 1, num) - 1;
 
         if (board[row][col] == queen) {
-            board[row][col] = '_';
-            cout << "\n\tRemoved queen at (" << row + 1 << ", " << col + 1 << ")\n";
+            board[row][col] = empty;
+            cout << "\n\tRemoved queen at (" << row + 1 << ", " << col + 1 << ")";
             moves++;
+            roundMoves++;   // also count removing as a step
             countQueen--;
-
         }
-        else
-        {
+        else {
             cout << "\n\tERROR: No queen exists at this position!\n";
         }
 
@@ -195,53 +210,62 @@ public:
         cout << char(0xBC) << endl;
     }
 
-    void updateStats(int secs, int moves) {
-        totalGames++;
-        totalTime += secs;
+    void updateStats(int size, int secs, int roundMoves)
+    {
+        Stats& st = statsBySize[size];
+        st.totalGames++;
+        st.totalTime += secs;
 
-        if (fastest == 0.0 || secs < fastest)
-        {
-            fastest = secs;
-            fastestMoves = moves;
-
+        if (st.fastest == 0.0 || secs < st.fastest) {
+            st.fastest = secs;
+            st.fastestMoves = roundMoves;
         }
-        if (secs > slowest)
-        {
-            slowest = secs;
-            slowestMoves = moves;
+        if (secs > st.slowest) {
+            st.slowest = secs;
+            st.slowestMoves = roundMoves;
         }
     }
 
     void printStats() {
-        if (totalGames == 0) {
-            cout << "\n\tNo game statistic collected.";
+        if (statsBySize.empty()) {
+            cout << "\n\tNo game statistics collected.";
             return;
         }
-        double avg = (fastest + slowest) / 2.0;
-        cout << "\n\t" << totalGames << (totalGames == 1 ? " game" : " games") << " using Tic-Tac-Toe were played.";
-        cout << "\n\t\tThe fastest time was " << fastest << " second(s) in " << fastestMoves << " moves.";
-        cout << "\n\t\tThe slowest time was " << slowest << " second(s) in " << slowestMoves << " moves.";
-        cout << "\n\t\tThe average time was " << avg << " second(s).";
+
+        for (auto& entry : statsBySize)
+        {
+            int size = entry.first;
+            const Stats& st = entry.second;
+
+            cout << "\n\t" << st.totalGames
+                << (st.totalGames == 1 ? " game" : " games")
+                << " using " << size << " queens was played.";
+
+            cout << "\n\t\tThe fastest time was " << st.fastest
+                << " second(s) in " << st.fastestMoves << " moves.";
+            cout << "\n\t\tThe slowest time was " << st.slowest
+                << " second(s) in " << st.slowestMoves << " moves.";
+            cout << "\n\t\tThe average time was "
+                << fixed << setprecision(1) << (st.totalTime / st.totalGames) << " second(s).";
+        }
     }
 
     void playGame()
     {
+        statsBySize.clear();
+
         char again = ' ';
 
         do {
-
             int num = inputInteger("\n\n\tEnter the board dimension nxn: ", true);
-            //reset(size);
             cout << "\n\t" << num << "-Queens\n";
 
             reset(num);
-            //cout << "\n\t" << num << "-Queens\n";
             displayBoard();
 
-            
+            time_t startTime = time(nullptr);
 
-            // inner loop: keep showing the menu until solved or user returns
-            while (!win) 
+            while (!win)
             {
                 cout << "\n\tGame Options: ";
                 cout << "\n\t" << string(80, char(205));
@@ -252,26 +276,26 @@ public:
                 cout << "\n\t" << string(80, char(205));
 
                 switch (toupper(inputChar("\n\tOption: ", "AB0"))) {
-                case 'A':
-                    placeQueen();     // may set win = true
-                    break;
-
-                case 'B':
-                    removeQueen();
-                    break;
-
-                case '0':
-                    // abandon this round (no stats recorded)
-                    return;
+                case 'A': placeQueen(); break;
+                case 'B': removeQueen(); break;
+                case '0': return;
                 }
-               
             }
+
+            if (win) {
+                int duration = static_cast<int>(difftime(time(nullptr), startTime));
+                updateStats(num, duration, roundMoves);
+            }
+
+            // prepare for next game
+            win = false;
+
             again = toupper(inputChar("\n\n\tPlay again? (Y-yes or N-no): ", "YN"));
 
-            
         } while (again == 'Y');
+
+        printStats();
     }
 
 };
-
 
