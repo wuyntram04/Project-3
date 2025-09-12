@@ -80,7 +80,9 @@ void TicTacToe::AI()
 
 int TicTacToe::checkPossibleWinMove(int r, int c) const
 {
-	int possibleWin = 0;
+	int possibleMove = 0;
+	int possibleWinCol = 0;
+	int possibleWinRow = 0;
 	int possibleBlockCol = 0;
 	int possibleBlockRow = 0;
 
@@ -89,59 +91,119 @@ int TicTacToe::checkPossibleWinMove(int r, int c) const
 
 		if (board[r][i] != player1)
 		{
-			possibleWin += 1;
+			possibleMove += 1;
 		}
 		
 		if (board[r][i] == player2)
 		{
-			possibleWin += 1;
+			possibleMove += 1;
+			possibleWinRow += 1;
 		}
 
 		if (board[r][i] == player1)
 		{
-			possibleWin -= 1;
+			possibleMove += 1;
 			possibleBlockRow += 1;
 		}
 
 		if (board[i][c] != player1)
 		{
-			possibleWin += 1;
+			possibleMove += 1;
 		}
 		
 		if (board[i][c] == player2)
 		{
-			possibleWin += 1;
+			possibleMove += 1;
+			possibleWinCol += 1;
 		}
 
 		if (board[i][c] == player1)
 		{
-			possibleWin -= 1;
+			possibleMove += 1;
 			possibleBlockCol += 1;
 		}
 	
 		if(possibleBlockRow > 1 || possibleBlockCol > 1)
 		{
-			possibleWin += 5;
+			possibleMove += 5;
+		}
+
+		if (possibleBlockRow > 1 || possibleBlockCol > 1)
+		{
+			possibleMove += 5;
 		}
 
 	}
 
 	int orderNumber = (r * 3) + c;
+	int possibleWinDia = 0;
+	int possibleBlockDia = 0;
 
 	if (orderNumber % 2 == 0)  // check diagonal
 	{
-		if (board[0][0] != player1 && board[1][1] != player1 && board[2][2] != player1)
+		if (orderNumber == 0 || orderNumber == 8)
 		{
-			possibleWin += 1;
+			for (int i = 0; i < 3; i++)
+			{
+				if (board[i][i] == player1)
+				{
+					possibleMove++;
+					possibleWinDia++;
+				}
+
+				if (board[i][i] == player2)
+				{
+					possibleWinDia--;
+				}
+			}
 		}
 
-		if (board[2][0] != player1 && board[1][1] != player1 && board[0][2] != player1)
+		if (orderNumber == 2 || orderNumber == 6)
 		{
-			possibleWin += 1;
+			int j = 2;
+			for (int i = 0; i < 3; i++, j--)
+			{
+				if (board[j][i] == player1)
+				{
+					possibleMove++;
+					possibleWinDia++;
+				}
+
+				if (board[j][i] == player2)
+				{
+					possibleWinDia--;
+				}
+			}
+		}
+
+		if (orderNumber == 4)
+		{
+			int j = 2;
+			for (int i = 0; i < 3; i++, j--)
+			{
+				if (board[j][i] == player1)
+				{
+					possibleMove++;
+				}
+			}
+
+			for (int i = 0; i < 3; i++)
+			{
+				if (board[i][i] == player1)
+				{
+					possibleMove++;
+
+				}
+			}
+		}
+
+		if (possibleWinDia > 1)
+		{
+			possibleMove += 5;
 		}
 	} 
 
-	return possibleWin;
+	return possibleMove;
 } 
 
 bool TicTacToe::checkCurrentWin(char player)
