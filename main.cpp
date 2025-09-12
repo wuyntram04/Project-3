@@ -88,51 +88,7 @@ void nQueensMenu()
 	cout << "\n\tqueens share the same row, column, or diagonal. Solutions exist for all natural";
 	cout << "\n\tnumbers n with the exception of n = 2 and n = 3.";
 
-	int num = inputInteger("\n\n\tEnter the board dimension nxn: ", true);
-
-	cout << "\n\t" << num << "-Queens\n";
-	// dynamically allocate board
-	char** board = new char* [num];
-	for (int i = 0; i < num; i++)
-		board[i] = new char[num];
-
+	n.playGame();
 	
-	for (int r = 0; r < num; r++)
-	{
-		for (int c = 0; c < num; c++) 
-		{
-			board[r][c] = '_';   // initialize all cells
-		}
-	}
-	cout << "\t";
-	n.displayBoard(num, board);
-
-	 
-
-	do
-	{
-		cout << "\n\tGame Options: ";
-		cout << "\n\t" << string(80, char(205));
-		cout << "\n\tA> Place a queen";
-		cout << "\n\tB> Remove an existing queen";
-		cout << "\n\t" << string(80, char(196));
-		cout << "\n\t0> return";
-		cout << "\n\t" << string(80, char(205));
-		
-		switch (toupper(inputChar("\n\tOption: ")))
-		{
-		case 'A': n.placeQueen(num, board);
-			break;
-		case 'B': n.removeQueen(num, board);
-			break;
-		}
-
-	} while (true);
-
-	//free memory
-	for (int i = 0; i < num; i++)
-	{
-		delete[] board[i];
-	}
-	delete[] board;
 }
+
