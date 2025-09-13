@@ -1,4 +1,4 @@
-﻿#include <stack>
+#include <stack>
 #include <iomanip>
 #pragma once
 using namespace std;
@@ -313,9 +313,6 @@ public:
 				cout << string(5, char(' '));
 			}
 		}
-
-			
-	
 	}
 			
 	void setRings(int r)
@@ -525,6 +522,109 @@ public:
 	int getCurrentMoves() const
 	{
 		return totalMoves;
+	}
+
+	void playGame()
+	{
+		char option = ' ';
+		bool playAgain = true;
+
+		setRings(inputInteger("\n\tEnter the number of ring (1..64) to begin: ", 1, 64));
+
+		do
+		{
+			displayTower();
+
+			option = inputChar("\n\n\tSelect the top disk from the start peg (A, B, C, or Q-quit): ", static_cast<string>("ABCQ"));
+			switch (toupper(option))
+			{
+			case 'A':
+				option = inputChar("\tSelect the end peg (A, B, C or Q-quit) to move the selected disk: ", static_cast<string>("ABCQ"));
+
+				switch (toupper(option))
+				{
+				case 'B':
+					moveAtoB();
+					break;
+				case 'C':
+					moveAtoC();
+					break;
+				case 'Q':
+					break;
+				default:
+					cout << "\n\tERROR: Cannot make the move. The selected end peg cannot be the same as the selected start peg.";
+					cout << "\n\tPlease choose again.";
+					break;
+				}
+				break;
+			case 'B':
+				option = inputChar("\tSelect the end peg (A, B, C or Q-quit) to move the selected disk: ", static_cast<string>("ABCQ"));
+				switch (toupper(option))
+				{
+				case 'A':
+					moveBtoA();
+					break;
+				case 'C':
+					moveBtoC();
+					break;
+				case 'Q':
+					break;
+				default:
+					cout << "\n\tERROR: Cannot make the move. The selected end peg cannot be the same as the selected start peg.";
+					cout << "\n\tPlease choose again.";
+					break;
+				}
+				break;
+			case 'C':
+				option = inputChar("\tSelect the end peg (A, B, C or Q-quit) to move the selected disk: ", static_cast<string>("ABCQ"));
+				switch (toupper(option))
+				{
+				case 'A':
+					moveCtoA();
+					break;
+				case 'B':
+					moveCtoB();
+					break;
+				case 'Q':
+					break;
+				default:
+					cout << "\n\tERROR: Cannot make the move. The selected end peg cannot be the same as the selected start peg.";
+					cout << "\n\tPlease choose again.";
+					break;
+				}
+				break;
+			case 'Q':
+				break;
+
+			default:
+				
+				break;
+
+			}
+			cout << "\n";
+
+			if (checkWin())
+			{
+				displayTower();
+
+				cout << "\n\n\tCongratuation! You have solved the game in " << getCurrentMoves() << " moves.";
+
+				if (inputChar("\n\n\tPlay again? (Y-yes) or (N-no) ", static_cast<string>("YN")) == 'Y')
+				{
+					playAgain = true;
+					restartGame();
+					setRings(inputInteger("\n\tEnter the number of ring (1..64) to begin: ", 1, 64));
+				}
+				else
+				{
+					playAgain = false;
+					option = 'Q';
+				}
+			}
+
+		} while (option != 'Q' && playAgain);
+
+		return;
 	}
 
 };
