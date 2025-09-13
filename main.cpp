@@ -1,10 +1,15 @@
 #include<iostream>
 #include"input.h"
 #include"TicTacToe.h"
+#include"n_Queens.h"
+#include"TowerOfHanoi.h"
+
 using namespace std;
 void mainMenu();
 void TicTacToeMenu();
 void nQueensMenu();
+void TowerOfHanoiMenu();
+
 int main()
 {
 	do
@@ -17,6 +22,7 @@ int main()
 			TicTacToeMenu();
 			break;
 		case '2': 
+			TowerOfHanoiMenu();
 			break;
 		case '3': 
 			nQueensMenu();
@@ -62,8 +68,6 @@ void TicTacToeMenu() {
 	cout << "\n\tthen be calculated and displayed.";
 	cout << "\n\n\tGame begins...";
 
-	
-
 	TicTacToe t;
 	char again;
 
@@ -75,6 +79,32 @@ void TicTacToeMenu() {
 	} while (again == 'Y');
 
 	t.printStats();  
+}
+
+
+void TowerOfHanoiMenu()
+{
+	system("cls");
+	cout << "\n\tThe Tower of Hanoi also called the Tower of Brahma or Lucas' Tower is a mathematical game.";
+	cout << "\n\tIt consists of three pegs and a number of rings of different sizes, which can slide onto";
+	cout << "\n\tany peg. The game starts with the rings in a neat stack in ascending order of size on one";
+	cout << "\n\tpeg, the smallest at the top, thus making a conical shape.";
+	
+	cout << "\n\tThe objective of the game is to move the entire stack from the starting peg-A to ending peg-B,";
+	cout << "\n\tobeying the following simple rules:";
+
+	cout << "\n\n\t\t1. Only one disk can be moved at a time.";
+	cout << "\n\t\t2. Each move consists of taking the upper disk from one of the stacks and";
+	cout << "\n\t\tplacing it on top of another stack or on an empty peg.";
+	cout << "\n\t\t3. No larger disk may be placed on top of a smaller disk.";
+
+	cout << "\n\n";
+
+	TowerOfHanoi toh;
+
+	toh.playGame();
+
+	return;
 }
 
 
@@ -91,4 +121,5 @@ void nQueensMenu()
 	n.playGame();
 	
 }
+
 
