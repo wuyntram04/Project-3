@@ -594,7 +594,7 @@ public:
 				}
 				break;
 			case 'Q':
-				break;
+				return;
 
 			default:
 				
@@ -628,4 +628,5 @@ public:
 	}
 
 };
+
 
