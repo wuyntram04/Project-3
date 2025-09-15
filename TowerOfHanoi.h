@@ -44,19 +44,6 @@ public:
 	}
 
 
-	// Destructor
-	// Precondition: None.
-	// Postcondition: Resets the ring count and clears all the towers.
-	~TowerOfHanoi()
-	{
-		rings = 0;
-		stack <int> newTower;
-
-		towerA = newTower;
-		towerB = newTower;
-		towerC = newTower;
-	}
-
 	// Precondition: Tower A must be empty.
 	// Postcondition: Pushes a number of rings onto Tower A from largest (bottom) to smallest (top).
 	void setRings(int r)
@@ -686,4 +673,5 @@ public:
 	}
 
 };
+
 
