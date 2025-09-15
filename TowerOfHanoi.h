@@ -1,5 +1,6 @@
 #include <stack>
 #include <iomanip>
+
 #pragma once
 using namespace std;
 
@@ -17,6 +18,59 @@ private:
 
 public:
 
+	// Default constructor
+	// Precondition: None
+	// Postcondition: Initializes the game with 0 rings.
+	TowerOfHanoi()
+	{
+		rings = 0;
+
+		stack <int> newStack;
+		towerA = newStack;
+	}
+
+
+	// Parameterized constructor
+	// Precondition: The input 'r' must be non-negative integer representing the number of rings.
+	// Postcondition: Initializes the game with 'r' rings on Tower A, arranged from largest (bottom) to smallest (top).
+	TowerOfHanoi(int r)
+	{
+		rings = r;
+
+		for (int i = r; i > 0; --i)
+		{
+			towerA.push(i);
+		}
+	}
+
+
+	// Destructor
+	// Precondition: None.
+	// Postcondition: Resets the ring count and clears all the towers.
+	~TowerOfHanoi()
+	{
+		rings = 0;
+		stack <int> newTower;
+
+		towerA = newTower;
+		towerB = newTower;
+		towerC = newTower;
+	}
+
+	// Precondition: Tower A must be empty.
+	// Postcondition: Pushes a number of rings onto Tower A from largest (bottom) to smallest (top).
+	void setRings(int r)
+	{
+		rings = r;
+
+		for (int i = r; i > 0; --i)
+		{
+			towerA.push(i);
+		}
+	}
+
+	// Precondition: None.
+	// Postcondition: Display the three towers: A, B and C.
 	void displayTower()
 	{
 		cout << "\n\tTower of Hanoi\n";
@@ -315,16 +369,10 @@ public:
 		}
 	}
 			
-	void setRings(int r)
-	{
-		rings = r;
+	
 
-		for (int i = r; i > 0; --i)
-		{
-			towerA.push(i);
-		}
-	}
-
+	// Precondition: Towers A and B must both be initialized. Tower A must have at least one disk.
+	// Postcondition: Move the top disk from Tower A to Tower B if the move is valid according to the rules.
 	void moveAtoB()
 	{
 		if (!towerA.empty() && !towerB.empty())
@@ -352,6 +400,8 @@ public:
 		}
 	}
 
+	// Precondition: Towers B and A must both be initialized. Tower B must have at least one disk.
+	// Postcondition: Move the top disk from Tower B to Tower A if the move is valid according to the rules.
 	void moveBtoA()
 	{
 		if (!towerB.empty() && !towerA.empty())
@@ -379,6 +429,8 @@ public:
 		}
 	}
 
+	// Precondition: Towers A and C must both be initialized. Tower A must have at least one disk.
+	// Postcondition: Move the top disk from Tower A to Tower C if the move is valid according to the rules.
 	void moveAtoC()
 	{
 		if (!towerA.empty() && !towerC.empty())
@@ -406,6 +458,9 @@ public:
 		}
 	}
 
+
+	// Precondition: Towers C and A must both be initialized. Tower C must have at least one disk.
+	// Postcondition: Move the top disk from Tower C to Tower A if the move is valid according to the rules.
 	void moveCtoA()
 	{
 		if (!towerC.empty() && !towerA.empty())
@@ -433,7 +488,8 @@ public:
 		}
 	}
 
-
+	// Precondition: Towers B and C must both be initialized. Tower B must have at least one disk.
+	// Postcondition: Move the top disk from Tower B to Tower C if the move is valid according to the rules.
 	void moveBtoC()
 	{
 		if (!towerB.empty() && !towerC.empty())
@@ -460,6 +516,8 @@ public:
 			cout << "\n\tERROR: Cannot make the move. There is no disk in the selected peg-B.\n\t       Please choose again";
 	}
 
+	// Precondition: Towers C and B must both be initialized. Tower C must have at least one disk.
+	// Postcondition: Move the top disk from Tower C to Tower B if the move is valid according to the rules.
 	void moveCtoB()
 	{
 		if (!towerC.empty() && !towerB.empty())
@@ -487,6 +545,8 @@ public:
 		}
 	}
 
+	// Precondition: None.
+	// Postcondition: Returns true if both Towers A and B are empty (the player wins); otherwise, return false.
 	bool checkWin()
 	{
 		if (towerA.empty() && towerB.empty())
@@ -498,6 +558,8 @@ public:
 			return false;
 	}
 
+	// Precondition: None.
+	// Postcondition: Resets all towers and ring count to their default values.
 	void restartGame()
 	{
 		rings = 0;
@@ -509,21 +571,17 @@ public:
 		
 	}
 
-	~TowerOfHanoi()
-	{
-		rings = 0;
-		stack <int> newTower;
 
-		towerA = newTower;
-		towerB = newTower;
-		towerC = newTower;
-	}
-
+	// Precondition: None.
+	// Postcondition: Returns the total number of moves.
 	int getCurrentMoves() const
 	{
 		return totalMoves;
 	}
 
+
+	// Precondition: None.
+	// Postcondition: Starts Tower of Hanoi game, allowing the player to make moves, and solve the puzzle.
 	void playGame()
 	{
 		char option = ' ';
@@ -628,5 +686,4 @@ public:
 	}
 
 };
-
 
